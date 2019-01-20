@@ -3,15 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Routes, RouterModule } from '@angular/router';
 
-
 import { IonicModule } from '@ionic/angular';
 
-import { ExamplePage } from './example.page';
+import { GoogleMapComponent } from './map.page';
 
 const routes: Routes = [
   {
     path: '',
-    component: ExamplePage
+    component: GoogleMapComponent
   }
 ];
 
@@ -20,8 +19,8 @@ const routes: Routes = [
     CommonModule,
     FormsModule,
     IonicModule,
-    RouterModule.forChild(routes),
+    RouterModule.forChild(routes)
   ],
-  declarations: [ExamplePage]
+  declarations: [GoogleMapComponent]
 })
-export class ExamplePageModule {}
+export class MapPageModule {}

@@ -1,3 +1,4 @@
+import { GoogleMapComponent } from './google-map/google-map.component';
 import { Component } from '@angular/core';
 
 import { Platform } from '@ionic/angular';
