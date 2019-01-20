@@ -124,6 +124,33 @@ export class PlacesAPIService {
       });
     });
   }
+  pointsPlusProche(debut: [number, number], table: [number, number][]): [number, number][] {
+    let retour: [number, number][];
+    let plusPetit: number[] = new Array();
+    retour[0] = [table[0][0], table[0][1]];
+    retour[1] = [table[1][0], table[1][1]];
+    retour[2] = [table[2][0], table[2][1]];
+    plusPetit[0] = ((debut[0] - table[0][0])^2 +(debut[1] - table[0][1])^2)^(1/2);
+    plusPetit[1] = ((debut[0] - table[1][0])^2 +(debut[1] - table[1][1])^2)^(1/2);
+    plusPetit[2] = ((debut[0] - table[2][0])^2 +(debut[1] - table[2][1])^2)^(1/2);
+    if (tableau.length > 2) {
+      for (let i = 3; i < tableau.length; i++) {
+        if (((debut[0] - table[i][0])^2 +(debut[1] - table[i][1])^2)^(1/2) < plusPetit[0]){
+          plusPetit[0] = ((debut[0] - table[i][0])^2 +(debut[1] - table[i][1])^2)^(1/2);
+          retour[0] = [table[i][0], table[i][1]];
+        }
+        else if(((debut[0] - table[i][0])^2 +(debut[1] - table[i][1])^2)^(1/2) < plusPetit[1]){
+          plusPetit[1] = ((debut[0] - table[i][0])^2 +(debut[1] - table[i][1])^2)^(1/2);
+          retour[1] = [table[i][0], table[i][1]];
+        }
+        else if(((debut[0] - table[i][0])^2 +(debut[1] - table[i][1])^2)^(1/2) < plusPetit[2]){
+          plusPetit[2] = ((debut[0] - table[i][0])^2 +(debut[1] - table[i][1])^2)^(1/2);
+          retour[2] = [table[i][0], table[i][1]];
+        }
+      }
+    }
+    return retour;
+  }
 
   transformStringMinutes(str: string): number {
     const arr: string[] = str.split(' ');
@@ -151,3 +178,4 @@ export class PlacesAPIService {
     return 0;
   }
 }
+
