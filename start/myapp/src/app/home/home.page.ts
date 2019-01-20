@@ -1,6 +1,6 @@
 import { GeoService } from './../geo.service';
 import { PlacesAPIService } from './../PlacesAPI/places-api.service';
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { Lieu } from '../Lieu';
 
 @Component({
@@ -18,27 +18,38 @@ export class HomePage {
   inRad = 2500;
   addr: string;
   endroits: Lieu[];
+  first = true;
 
-  constructor(public mapsSerice: PlacesAPIService, public geoService: GeoService) {
-
+  constructor(public mapsService: PlacesAPIService, public geoService: GeoService) {
+    this.useMyLocation();
   }
 
   getAddr() {
-    this.mapsSerice.getLatLongArray(['Montreal, Quebec', 'Paris, France']);
+    const ser = this.mapsService.getDistanceLatLongNumber({lat: 48.862725, long: 2.287592},
+       {lat: 48.8039, long: 2.287592}, 'WALKING');
+    console.log(ser);
   }
 
-  useMyLocation() {
-    this.geoService.getLocation();
-    this.inLat = this.geoService.lat;
-    this.inLong = this.geoService.long;
+  async useMyLocation() {
+    if (this.first) {
+      this.geoService.getLocation();
+    }
+    if (!this.first) {
+      this.inLat = this.geoService.lat;
+      this.inLong = this.geoService.long;
+    }
+    console.log(this.inLat);
+    console.log(this.inLong);
+    if (!this.first) {
+      this.addr = (await this.mapsService.getAddr(this.inLat, this.inLong));
+    }
+    this.first = false;
   }
 
   async loadPlaces() {
     document.getElementById('home').style.display = 'none';
     document.getElementById('result').style.display = 'block';
-    const places: Lieu[] = await this.mapsSerice.getPlaces(this.inLat, this.inLong, this.inType, this.inKey, this.inRad);
-    const temps = this.mapsSerice.test(places, this.addr);
-    console.log(temps);
+    const places: Lieu[] = await this.mapsService.getPlaces(this.inLat, this.inLong, this.inType, this.inKey, this.inRad);
   }
 
   annuler() {

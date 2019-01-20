@@ -18,22 +18,15 @@ export class PlacesAPIService {
     this.geoCoder = new google.maps.Geocoder();
   }
 
-  getAddr(lat: number, long: number): string {
+  getAddr(lat: number, long: number): Promise<string> {
     const latlng = new google.maps.LatLng(lat, long);
-    this.geoCoder.geocode({
-      'latLng': latlng
-    }, function (results, status) {
-      if (status === google.maps.GeocoderStatus.OK) {
-        if (results[1]) {
-          return results[1];
-        } else {
-          alert('No results found');
-        }
-      } else {
-        alert('Geocoder failed due to: ' + status);
-      }
+    const geo = this.geoCoder;
+    return new Promise(function(fulfill, reject) {
+      geo.geocode({ latLng: latlng }, (results, status) => {
+        console.log(results);
+        fulfill( results[0].formatted_address);
+      });
     });
-    return 'address could not be found';
   }
 
   getLatLong(addr: string): [number, number] {
@@ -91,37 +84,98 @@ export class PlacesAPIService {
     });
   }
 
-  getDistanceAddr(debut: string, fin: string, travelMode: string): Promise<string> {
+  getDistanceAddr(debut: string, fin: string, travelMode: string): Promise<number> {
     const service = new google.maps.DirectionsService(this.map);
     const request = {
       origin: debut,
       destination: fin,
       travelMode: travelMode
     };
-    let temps = '';
+    let temps = 0;
     return new Promise(function(fulfill, reject) {
       service.route(request, (result, status) => {
-        temps = result.routes[0].legs[0].duration.text;
+        temps = this.transformStringMinutes(result.routes[0].legs[0].duration.text);
         fulfill(temps);
       });
     });
   }
 
-  getDistanceLatLong(debut: [number, number], fin: [number, number], travelMode: string): Promise<string> {
+  getDistanceLatLong(debut: {lat: number, long: number}, fin: {lat: number, long: number}, travelMode: string): Promise<string> {
     const service = new google.maps.DirectionsService(this.map);
-    const latlngDebut = new google.maps.LatLng(debut[0], debut[1]);
-    const latlngFin = new google.maps.LatLng(fin[0], fin[1]);
+    const latlngDebut = new google.maps.LatLng(debut.lat, debut.long);
+    const latlngFin = new google.maps.LatLng(fin.lat, fin.long);
     const request = {
-      origin: debut,
-      destination: fin,
+      origin: latlngDebut,
+      destination: latlngFin,
       travelMode: travelMode
     };
-    let temps = '';
     return new Promise(function(fulfill, reject) {
       service.route(request, (result, status) => {
-        temps = result.routes[0].legs[0].duration.text;
-        fulfill(temps);
+        fulfill(result.routes[0].legs[0].duration.text);
       });
     });
   }
+
+  async getDistanceLatLongNumber(debut: {lat: number, long: number}, fin: {lat: number, long: number},
+     travelMode: string): Promise<number> {
+    const temps = await this.getDistanceLatLong({lat: debut.lat, long: debut.long}, {lat: fin.lat, long: fin.long}, 'WALKING');
+    console.log(temps);
+    const numTemps: number = this.transformStringMinutes(temps);
+    return numTemps;
+  }
+
+  /*pointsPlusProche(debut: [number, number], table: [number, number][]): [number, number][] {
+    const retour: [number, number][] = new Array();
+    const plusPetit: number[] = new Array();
+    retour[0] = [table[0][0], table[0][1]];
+    retour[1] = [table[1][0], table[1][1]];
+    retour[2] = [table[2][0], table[2][1]];
+    plusPetit[0] = ((debut[0] - table[0][0])^2 +(debut[1] - table[0][1])^2)^(1/2);
+    plusPetit[1] = ((debut[0] - table[1][0])^2 +(debut[1] - table[1][1])^2)^(1/2);
+    plusPetit[2] = ((debut[0] - table[2][0])^2 +(debut[1] - table[2][1])^2)^(1/2);
+    if (table.length > 2) {
+      for (let i = 3; i < table.length; i++) {
+        if (((debut[0] - table[i][0])^2 +(debut[1] - table[i][1])^2)^(1/2) < plusPetit[0]){
+          plusPetit[0] = ((debut[0] - table[i][0])^2 +(debut[1] - table[i][1])^2)^(1/2);
+          retour[0] = [table[i][0], table[i][1]];
+        } else if(((debut[0] - table[i][0])^2 +(debut[1] - table[i][1])^2)^(1/2) < plusPetit[1]){
+          plusPetit[1] = ((debut[0] - table[i][0])^2 +(debut[1] - table[i][1])^2)^(1/2);
+          retour[1] = [table[i][0], table[i][1]];
+        } else if(((debut[0] - table[i][0])^2 +(debut[1] - table[i][1])^2)^(1/2) < plusPetit[2]){
+          plusPetit[2] = ((debut[0] - table[i][0])^2 +(debut[1] - table[i][1])^2)^(1/2);
+          retour[2] = [table[i][0], table[i][1]];
+        }
+      }
+    }
+    return retour;
+  }*/
+
+  transformStringMinutes(str: string): number {
+    const arr: string[] = str.split(' ');
+    console.log(str);
+    console.log(arr);
+    let multiplicateur = 1;
+    let total = 0;
+    for (let i = 1; i < arr.length; i += 2) {
+      switch (arr[i].toLowerCase()) {
+        case 'day':
+        case 'days':
+        case 'jour':
+        case 'jours': multiplicateur = 24 * 60;
+        break;
+
+        case 'heure':
+        case 'heures':
+        case 'hour':
+        case 'hours': multiplicateur = 60;
+        break;
+
+        default: multiplicateur = 1;
+      }
+      total += multiplicateur * Number(arr[i - 1]);
+    }
+
+    return total;
+  }
 }
+
