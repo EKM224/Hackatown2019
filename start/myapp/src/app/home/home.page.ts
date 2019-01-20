@@ -7,11 +7,11 @@ import { Component } from '@angular/core';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  inLat: number;
-  inLong: number;
-  inType: string;
+  inLat: number = 45.502990;
+  inLong: number = -73.613990;
+  inType: string = "restaurant";
   inKey: string;
-  inRad: number;
+  inRad: number = 1500;
 
   constructor(public mapsSerice: PlacesAPIService){
 
