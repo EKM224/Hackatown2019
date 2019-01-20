@@ -44,7 +44,7 @@ export class PlacesAPIService {
         if (results[0]) {
           const long = (results[0].geometry.viewport.ga.j + results[0].geometry.viewport.ga.l) / 2;
           const lat = (results[0].geometry.viewport.ma.j + results[0].geometry.viewport.ma.l) / 2;
-          console.log('lat: ' + lat + '\nlong: ' + long );
+          console.log('addresse: ' + addr + '\nlat: ' + lat + '\nlong: ' + long );
           return [lat, long];
         } else {
           alert('No results found');
@@ -54,6 +54,15 @@ export class PlacesAPIService {
       }
     });
     return [0, 0];
+  }
+
+  getLatLongArray(adrdresses: string[]): [number, number][] {
+    const retour: [number, number][] = new Array();
+    adrdresses.forEach(item => {
+      retour.push(this.getLatLong(item));
+    });
+
+    return retour;
   }
 
 

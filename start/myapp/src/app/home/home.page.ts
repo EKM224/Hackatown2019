@@ -24,7 +24,7 @@ export class HomePage {
   }
 
   getAddr() {
-    this.addr = this.mapsSerice.getAddr(this.inLat, this.inLong);
+    this.mapsSerice.getLatLongArray(['Montreal, Quebec', 'Paris, France']);
   }
 
   useMyLocation() {
