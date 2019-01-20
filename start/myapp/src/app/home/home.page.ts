@@ -9,9 +9,9 @@ import { Lieu } from '../Lieu';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  inLat: number; //= 45.502990;
+  inLat: number; // = 45.502990;
   inLong: number; // = -73.613990;
-  inType: string = "restaurant";
+  inType = 'restaurant';
   inKey: string;
   inRad = 1500;
 
@@ -19,13 +19,13 @@ export class HomePage {
 
   }
 
-  useMyLocation(){
+  useMyLocation() {
     this.geoService.getLocation();
     this.inLat = this.geoService.lat;
     this.inLong = this.geoService.long;
   }
 
-  loadPlaces(){
+  loadPlaces() {
     let places: Lieu[] = new Array();
     places = this.mapsSerice.getPlaces(this.inLat, this.inLong, this.inType, this.inKey, this.inRad);
     console.log(places);
