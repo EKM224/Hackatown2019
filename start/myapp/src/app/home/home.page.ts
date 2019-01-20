@@ -1,6 +1,7 @@
+import { GeoService } from './../geo.service';
 import { PlacesAPIService } from './../PlacesAPI/places-api.service';
 import { Component } from '@angular/core';
-import { Lieu } from '../Lieu'
+import { Lieu } from '../Lieu';
 
 @Component({
   selector: 'app-home',
@@ -8,15 +9,22 @@ import { Lieu } from '../Lieu'
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  inLat: number = 45.502990;
-  inLong: number = -73.613990;
+  inLat: number; //= 45.502990;
+  inLong: number; // = -73.613990;
   inType: string = "restaurant";
   inKey: string;
   inRad: number = 1500;
 
-  constructor(public mapsSerice: PlacesAPIService){
+  constructor(public mapsSerice: PlacesAPIService, public geoService: GeoService){
 
   }
+
+  useMyLocation(){
+    this.geoService.getLocation();
+    this.inLat = this.geoService.lat;
+    this.inLong = this.geoService.long;
+  }
+
   loadPlaces(){
     let places: Lieu[] = new Array();
     places = this.mapsSerice.getPlaces(this.inLat, this.inLong, this.inType, this.inKey, this.inRad);
