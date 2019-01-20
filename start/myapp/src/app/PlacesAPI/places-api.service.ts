@@ -73,9 +73,7 @@ export class PlacesAPIService {
       radius: radius,
       type: type,
       openNow: true,
-      keyword: keyword,
-      minPriceLevel: 0,
-      maxPriceLevel: 4
+      keyword: keyword
     };
     return new Promise(function(fulfill, reject) {
       service.nearbySearch(request, (result, status) => {
@@ -93,22 +91,8 @@ export class PlacesAPIService {
     });
   }
 
-  filterByRating(lieus: Lieu[], minRating: number): Lieu[] {
-   return lieus.filter((lieu: Lieu) => lieu.rating > minRating);
-  }
-
-  makeItenarary() {
-
-  }
-
-  test(testArray: Lieu[], localisation: string) {
-    const wayPoints: string[] = new Array(testArray.length);
-    testArray.forEach((item) => {
-      wayPoints.push(item.adresse);
-    });
+  getDistanceAddr(debut: string, fin: string, travelMode: string): Promise<string> {
     const service = new google.maps.DirectionsService(this.map);
-    const latlngDebut = new google.maps.LatLng(debut[0], debut[1]);
-    const latlngFin = new google.maps.LatLng(fin[0], fin[1]);
     const request = {
       origin: debut,
       destination: fin,
@@ -123,8 +107,10 @@ export class PlacesAPIService {
     });
   }
 
-  getDistanceAddr(debut: string, fin: string, travelMode: string): Promise<string> {
+  getDistanceLatLong(debut: [number, number], fin: [number, number], travelMode: string): Promise<string> {
     const service = new google.maps.DirectionsService(this.map);
+    const latlngDebut = new google.maps.LatLng(debut[0], debut[1]);
+    const latlngFin = new google.maps.LatLng(fin[0], fin[1]);
     const request = {
       origin: debut,
       destination: fin,
