@@ -18,7 +18,7 @@ export class PlacesAPIService {
     this.geoCoder = new google.maps.Geocoder();
   }
 
-  getAddr(lat: number, long: number) {
+  getAddr(lat: number, long: number): string {
     const latlng = new google.maps.LatLng(lat, long);
     this.geoCoder.geocode({
       'latLng': latlng
@@ -26,6 +26,7 @@ export class PlacesAPIService {
       if (status === google.maps.GeocoderStatus.OK) {
         if (results[1]) {
           console.log(results[1]);
+          return results[1];
         } else {
           alert('No results found');
         }
@@ -33,6 +34,7 @@ export class PlacesAPIService {
         alert('Geocoder failed due to: ' + status);
       }
     });
+    return 'adress could not be found';
   }
 
   getPlaces(lat: number, long: number, type: string, keyword: string, radius: number): Promise<Lieu[]> {
@@ -50,7 +52,6 @@ export class PlacesAPIService {
           const lieus: Lieu[] = [];
           result.forEach(element => {
             const lieu: Lieu = new Lieu(element.name, element.vicinity, element.rating);
-            console.log(lieu);
             lieus.push(lieu);
           });
           fulfill(lieus);
@@ -60,6 +61,28 @@ export class PlacesAPIService {
       });
     });
   }
+
+  test(testArray: Lieu[], localisation: string) {
+    const wayPoints: string[] = new Array(testArray.length);
+    testArray.forEach((item) => {
+      wayPoints.push(item.adresse);
+    });
+    const service = new google.maps.DirectionsService(this.map);
+    const request = {
+      origin: localisation,
+      destination: localisation,
+      travelMode: 'WALKING',
+      waypoints: wayPoints,
+    };
+    let temps = '';
+    return new Promise(function(fulfill, reject) {
+      service.route(request, (result, status) => {
+        temps = result.routes[0].legs[0].duration.text;
+        fulfill(temps);
+      });
+    });
+  }
+
 
   getDirection(debut: string, fin: string, travelMode: string): Promise<string> {
     const service = new google.maps.DirectionsService(this.map);
