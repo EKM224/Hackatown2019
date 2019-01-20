@@ -18,7 +18,12 @@ export class HomePage {
   inRad = 1500;
   endroits: Lieu[];
 
-  constructor(public mapsSerice: PlacesAPIService, public geoService: GeoService){
+  constructor(public mapsSerice: PlacesAPIService, public geoService: GeoService) {
+
+  }
+
+  getAddr() {
+    this.mapsSerice.getAddr(this.inLat, this.inLong);
   }
 
   useMyLocation() {
@@ -27,15 +32,14 @@ export class HomePage {
     this.inLong = this.geoService.long;
   }
 
-  loadPlaces() {
+  async loadPlaces() {
     document.getElementById('home').style.display = 'none';
     document.getElementById('result').style.display = 'block';
-    let places: Lieu[] = new Array();
-    places = this.mapsSerice.getPlaces(this.inLat, this.inLong, this.inType, this.inKey, this.inRad);
+    const places: Lieu[] = await this.mapsSerice.getPlaces(this.inLat, this.inLong, this.inType, this.inKey, this.inRad);
     console.log(places);
-    this.endroits = places;
-    console.log(places.length);
-    this.mapsSerice.getDirection(places[0].adresse, places[1].adresse);
+    const array = new Array({1: 2, 3: 4, 5: 6}, {7: 8, 9: 10, 11: 12});
+    console.log(array[0]);
+    // this.mapsSerice.getDirection(places[0].adresse, places[1].adresse, 'WALKING');
   }
 
   annuler() {

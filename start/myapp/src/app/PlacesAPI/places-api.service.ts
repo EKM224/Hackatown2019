@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { Lieu } from '../Lieu';
+import { async } from 'q';
 declare const require: any;
 declare var google;
 
@@ -9,16 +10,32 @@ declare var google;
   providedIn: 'root'
 })
 export class PlacesAPIService {
-  private placesUrl: string;
-  private googleAPIKey: string;
   private map: any;
+  private geoCoder;
 
   constructor(private http: HttpClient) {
     this.map = new google.maps.Map(document.getElementById('map'));
-    this.googleAPIKey = 'AIzaSyCqS8bXAYAOrObOu6-eWUE0mCsw0tKBKMY';
+    this.geoCoder = new google.maps.Geocoder();
   }
 
-  getPlaces(lat: number, long: number, type: string, keyword: string, radius: number): Lieu[] {
+  getAddr(lat: number, long: number) {
+    const latlng = new google.maps.LatLng(lat, long);
+    this.geoCoder.geocode({
+      'latLng': latlng
+    }, function (results, status) {
+      if (status === google.maps.GeocoderStatus.OK) {
+        if (results[1]) {
+          console.log(results[1]);
+        } else {
+          alert('No results found');
+        }
+      } else {
+        alert('Geocoder failed due to: ' + status);
+      }
+    });
+  }
+
+  getPlaces(lat: number, long: number, type: string, keyword: string, radius: number): Promise<Lieu[]> {
     const service = new google.maps.places.PlacesService(this.map);
     const request = {
       location: new google.maps.LatLng(lat, long),
@@ -27,30 +44,36 @@ export class PlacesAPIService {
       openNow: true,
       keyword: keyword
     };
-    const lieus: Lieu[] = new Array();
-    service.nearbySearch(request, (result, status) => {
-      for (let i = 0; i < result.length; i++) {
-        const res = result[i];
-        const lieu = new Lieu(res.name, res.vicinity, res.rating);
-        lieus.push(lieu);
-      }
+    return new Promise(function(fulfill, reject) {
+      service.nearbySearch(request, (result, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          const lieus: Lieu[] = [];
+          result.forEach(element => {
+            const lieu: Lieu = new Lieu(element.name, element.vicinity, element.rating);
+            console.log(lieu);
+            lieus.push(lieu);
+          });
+          fulfill(lieus);
+        } else {
+          reject('Reqest status code was not ok');
+        }
+      });
     });
-    return lieus;
   }
 
-  getDirection(debut: string, fin: string): string {
+  getDirection(debut: string, fin: string, travelMode: string): Promise<string> {
     const service = new google.maps.DirectionsService(this.map);
     const request = {
       origin: debut,
       destination: fin,
-      travelMode: 'WALKING'
+      travelMode: travelMode
     };
     let temps = '';
-    service.route(request, (result, status) => {
-      console.log(result);
-      temps = result.routes[0].legs[0].duration.text;
-      console.log(temps);
+    return new Promise(function(fulfill, reject) {
+      service.route(request, (result, status) => {
+        temps = result.routes[0].legs[0].duration.text;
+        fulfill(temps);
+      });
     });
-    return temps;
   }
 }
