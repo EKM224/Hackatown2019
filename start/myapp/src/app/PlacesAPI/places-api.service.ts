@@ -42,7 +42,9 @@ export class PlacesAPIService {
       radius: radius,
       type: type,
       openNow: true,
-      keyword: keyword
+      keyword: keyword,
+      minPriceLevel: 0,
+      maxPriceLevel: 4
     };
     return new Promise(function(fulfill, reject) {
       service.nearbySearch(request, (result, status) => {
@@ -59,6 +61,14 @@ export class PlacesAPIService {
         }
       });
     });
+  }
+
+  filterByRating(lieus: Lieu[], minRating: number): Lieu[] {
+   return lieus.filter((lieu: Lieu) => lieu.rating > minRating);
+  }
+
+  makeItenarary(){
+
   }
 
   getDirection(debut: string, fin: string, travelMode: string): Promise<string> {

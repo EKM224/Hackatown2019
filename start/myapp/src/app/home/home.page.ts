@@ -13,7 +13,7 @@ export class HomePage {
   inLong: number; // = -73.613990;
   inType = 'restaurant';
   inKey: string;
-  inRad = 1500;
+  inRad = 2500;
 
   constructor(public mapsSerice: PlacesAPIService, public geoService: GeoService) {
 
@@ -31,9 +31,6 @@ export class HomePage {
 
   async loadPlaces() {
     const places: Lieu[] = await this.mapsSerice.getPlaces(this.inLat, this.inLong, this.inType, this.inKey, this.inRad);
-    console.log(places);
-    const array = new Array({1: 2, 3: 4, 5: 6}, {7: 8, 9: 10, 11: 12});
-    console.log(array[0]);
     // this.mapsSerice.getDirection(places[0].adresse, places[1].adresse, 'WALKING');
   }
 }
