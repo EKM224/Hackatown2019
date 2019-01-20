@@ -38,4 +38,16 @@ export class PlacesAPIService {
     return lieus;
   }
 
+  getDirection(debut: string, fin: string){
+    const service = new google.maps.DirectionsService(this.map);
+    const request = {
+      origin: debut,
+      destination: fin,
+      travelMode: 'WALKING'
+    };
+
+    service.route(request, (result, status) =>{
+      console.log(result);
+    })
+  }
 }

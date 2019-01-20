@@ -1,5 +1,6 @@
 import { PlacesAPIService } from './../PlacesAPI/places-api.service';
 import { Component } from '@angular/core';
+import { Lieu } from '../Lieu'
 
 @Component({
   selector: 'app-home',
@@ -17,8 +18,10 @@ export class HomePage {
 
   }
   loadPlaces(){
-    let places = this.mapsSerice.getPlaces(this.inLat, this.inLong, this.inType, this.inKey, this.inRad)
+    let places: Lieu[] = new Array();
+    places = this.mapsSerice.getPlaces(this.inLat, this.inLong, this.inType, this.inKey, this.inRad);
     console.log(places);
+    this.mapsSerice.getDirection("6025, Boul. De La, Chemin de la Côte-des-Neiges, Montréal"
+      , "5400 Chemin de la Côte-des-Neiges, Montréal");
   }
-
 }
