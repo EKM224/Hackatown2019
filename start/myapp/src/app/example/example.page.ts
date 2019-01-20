@@ -16,7 +16,7 @@ export class ExamplePage implements OnInit {
   }
 
   ngOnInit() {
-    this.hero = this.placesAPI.getPlaces();
+    this.hero = this.placesAPI.getPlaces(-33.8670522, 151.1957362, "restaurant", "cruise", 1500);
   //  this.placesAPI.getPlaces().subscribe(data => {
   //      console.log(data);
   //      this.hero = data;
