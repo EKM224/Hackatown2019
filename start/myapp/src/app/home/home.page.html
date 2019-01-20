@@ -18,6 +18,9 @@
     </ion-card>
     <ion-list lines="none">
       <ion-item>
+        <ion-button (click)='useMyLocation()'>Use my location</ion-button>
+      </ion-item>
+      <ion-item>
         <ion-input [(ngModel)]="inLat" placeholder="Latitude"></ion-input>
       </ion-item>
       <ion-item>
