@@ -107,10 +107,10 @@ export class PlacesAPIService {
     });
   }
 
-  getDistanceLatLong(debut: [number, number], fin: [number, number], travelMode: string): Promise<number> {
+  getDistanceLatLong(debut: {lat: number, long: number}, fin: {lat: number, long: number}, travelMode: string): Promise<number> {
     const service = new google.maps.DirectionsService(this.map);
-    const latlngDebut = new google.maps.LatLng(debut[0], debut[1]);
-    const latlngFin = new google.maps.LatLng(fin[0], fin[1]);
+    const latlngDebut = new google.maps.LatLng(debut.lat, debut.long);
+    const latlngFin = new google.maps.LatLng(fin.lat, fin.long);
     const request = {
       origin: debut,
       destination: fin,
