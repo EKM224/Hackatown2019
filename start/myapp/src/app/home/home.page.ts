@@ -25,7 +25,7 @@ export class HomePage {
   }
 
   getAddr() {
-    console.log(this.mapsService.getDistanceAddr('Montreal, Quebec', 'Texas, Etats-Unis', 'WALKING'));
+    console.log(this.mapsService.getDistanceAddr('Montreal, Quebec', 'Quebec, Quebec', 'WALKING'));
   }
 
   useMyLocation() {

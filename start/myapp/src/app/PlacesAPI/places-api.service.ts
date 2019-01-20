@@ -91,23 +91,23 @@ export class PlacesAPIService {
     });
   }
 
-  getDistanceAddr(debut: string, fin: string, travelMode: string): Promise<string> {
+  getDistanceAddr(debut: string, fin: string, travelMode: string): Promise<number> {
     const service = new google.maps.DirectionsService(this.map);
     const request = {
       origin: debut,
       destination: fin,
       travelMode: travelMode
     };
-    let temps = '';
+    let temps = 0;
     return new Promise(function(fulfill, reject) {
       service.route(request, (result, status) => {
-        temps = result.routes[0].legs[0].duration.text;
+        temps = this.transformStringMinutes(result.routes[0].legs[0].duration.text);
         fulfill(temps);
       });
     });
   }
 
-  getDistanceLatLong(debut: [number, number], fin: [number, number], travelMode: string): Promise<string> {
+  getDistanceLatLong(debut: [number, number], fin: [number, number], travelMode: string): Promise<number> {
     const service = new google.maps.DirectionsService(this.map);
     const latlngDebut = new google.maps.LatLng(debut[0], debut[1]);
     const latlngFin = new google.maps.LatLng(fin[0], fin[1]);
@@ -116,12 +116,38 @@ export class PlacesAPIService {
       destination: fin,
       travelMode: travelMode
     };
-    let temps = '';
+    let temps = 0;
     return new Promise(function(fulfill, reject) {
       service.route(request, (result, status) => {
-        temps = result.routes[0].legs[0].duration.text;
+        temps = this.transformStringMinutes(result.routes[0].legs[0].duration.text);
         fulfill(temps);
       });
     });
+  }
+
+  transformStringMinutes(str: string): number {
+    const arr: string[] = str.split(' ');
+    let multiplicateur = 1;
+    let total = 0;
+    for (let i = 1; i < arr.length; i += 2) {
+      switch (arr[i].toLowerCase()) {
+        case 'day':
+        case 'days':
+        case 'jour':
+        case 'jours': multiplicateur = 24 * 60;
+        break;
+
+        case 'heure':
+        case 'heures':
+        case 'hour':
+        case 'hours': multiplicateur = 60;
+        break;
+
+        default: multiplicateur = 1;
+      }
+      total += multiplicateur * Number(arr[i - 1]);
+    }
+
+    return 0;
   }
 }
