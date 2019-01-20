@@ -25,7 +25,6 @@ export class PlacesAPIService {
     }, function (results, status) {
       if (status === google.maps.GeocoderStatus.OK) {
         if (results[1]) {
-          console.log(results[1]);
           return results[1];
         } else {
           alert('No results found');
@@ -43,8 +42,6 @@ export class PlacesAPIService {
     }, function (results, status) {
       if (status === google.maps.GeocoderStatus.OK) {
         if (results[0]) {
-          console.log('resultat get lat long de ' + addr);
-          console.log(results[0]);
           const long = (results[0].geometry.viewport.ga.j + results[0].geometry.viewport.ga.l) / 2;
           const lat = (results[0].geometry.viewport.ma.j + results[0].geometry.viewport.ma.l) / 2;
           console.log('lat: ' + lat + '\nlong: ' + long );
