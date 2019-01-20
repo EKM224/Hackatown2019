@@ -16,7 +16,7 @@ export class PlacesAPIService {
     this.map = new google.maps.Map(document.getElementById('map'));
   }
 
-  getPlaces(lat: number, long: number, type: string, keyword: string, radius: number): Lieu[] {
+  getPlaces(lat: number, long: number, type: string, keyword: string, radius: number): Promise<Lieu[]> {
     const service = new google.maps.places.PlacesService(this.map);
     const request = {
       location: new google.maps.LatLng(lat, long),
@@ -25,20 +25,24 @@ export class PlacesAPIService {
       openNow: true,
       keyword: keyword
     };
-    const lieus: Lieu[] = [];
-    service.nearbySearch(request, (result, status) => {
-      if (status === google.maps.places.PlacesServiceStatus.OK) {
-        result.forEach(element => {
-          const lieu: Lieu = new Lieu(element.name, element.vicinity, element.rating);
-          console.log(lieu);
-          lieus.push(lieu);
-        });
-      }
+    return new Promise(function(fulfill, reject) {
+      service.nearbySearch(request, (result, status) => {
+        if (status === google.maps.places.PlacesServiceStatus.OK) {
+          const lieus: Lieu[] = [];
+          result.forEach(element => {
+            const lieu: Lieu = new Lieu(element.name, element.vicinity, element.rating);
+            console.log(lieu);
+            lieus.push(lieu);
+          });
+          fulfill(lieus);
+        } else {
+          reject('Reqest status code was not ok');
+        }
+      });
     });
-    return lieus;
   }
 
-  getDirection(debut: string, fin: string, travelMode: string): string {
+  getDirection(debut: string, fin: string, travelMode: string): Promise<string> {
     const service = new google.maps.DirectionsService(this.map);
     const request = {
       origin: debut,
@@ -46,11 +50,11 @@ export class PlacesAPIService {
       travelMode: travelMode
     };
     let temps = '';
-    service.route(request, (result, status) => {
-      console.log(result);
-      temps = result.routes[0].legs[0].duration.text;
-      console.log(temps);
+    return new Promise(function(fulfill, reject) {
+      service.route(request, (result, status) => {
+        temps = result.routes[0].legs[0].duration.text;
+        fulfill(temps);
+      });
     });
-    return temps;
   }
 }

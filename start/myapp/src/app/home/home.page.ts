@@ -25,11 +25,11 @@ export class HomePage {
     this.inLong = this.geoService.long;
   }
 
-  loadPlaces() {
-    const places: Lieu[] = this.mapsSerice.getPlaces(this.inLat, this.inLong, this.inType, this.inKey, this.inRad);
+  async loadPlaces() {
+    const places: Lieu[] = await this.mapsSerice.getPlaces(this.inLat, this.inLong, this.inType, this.inKey, this.inRad);
     console.log(places);
     const array = new Array({1: 2, 3: 4, 5: 6}, {7: 8, 9: 10, 11: 12});
     console.log(array[0]);
-    this.mapsSerice.getDirection(places[0].adresse, places[1].adresse, 'WALKING');
+    // this.mapsSerice.getDirection(places[0].adresse, places[1].adresse, 'WALKING');
   }
 }
