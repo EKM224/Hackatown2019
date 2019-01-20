@@ -1,6 +1,6 @@
 import { PlacesAPIService } from './../PlacesAPI/places-api.service';
 import { Component } from '@angular/core';
-import { Lieu } from '../Lieu'
+import { Lieu } from '../Lieu';
 
 @Component({
   selector: 'app-home',
@@ -8,20 +8,19 @@ import { Lieu } from '../Lieu'
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  inLat: number = 45.502990;
-  inLong: number = -73.613990;
-  inType: string = "restaurant";
+  inLat = 45.502990;
+  inLong = -73.613990;
+  inType = 'restaurant';
   inKey: string;
-  inRad: number = 1500;
+  inRad = 1500;
 
-  constructor(public mapsSerice: PlacesAPIService){
+  constructor(public mapsSerice: PlacesAPIService) {
 
   }
-  loadPlaces(){
+  loadPlaces() {
     let places: Lieu[] = new Array();
     places = this.mapsSerice.getPlaces(this.inLat, this.inLong, this.inType, this.inKey, this.inRad);
     console.log(places);
-    this.mapsSerice.getDirection("6025, Boul. De La, Chemin de la Côte-des-Neiges, Montréal"
-      , "5400 Chemin de la Côte-des-Neiges, Montréal");
+    this.mapsSerice.getDirection(places[0].adresse, places[1].adresse);
   }
 }

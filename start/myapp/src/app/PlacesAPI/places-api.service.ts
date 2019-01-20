@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { Lieu } from '../Lieu'
+import { Lieu } from '../Lieu';
 declare const require: any;
 declare var google;
 
@@ -18,7 +18,7 @@ export class PlacesAPIService {
     this.googleAPIKey = 'AIzaSyCqS8bXAYAOrObOu6-eWUE0mCsw0tKBKMY';
   }
 
-  getPlaces(lat: number, long: number, type: string, keyword: string, radius: number): any {
+  getPlaces(lat: number, long: number, type: string, keyword: string, radius: number): Lieu[] {
     const service = new google.maps.places.PlacesService(this.map);
     const request = {
       location: new google.maps.LatLng(lat, long),
@@ -27,9 +27,9 @@ export class PlacesAPIService {
       openNow: true,
       keyword: keyword
     };
-    var lieus: Lieu[] = new Array();
+    const lieus: Lieu[] = new Array();
     service.nearbySearch(request, (result, status) => {
-      for(var i = 0; i < result.length; i++){
+      for (let i = 0; i < result.length; i++) {
         const res = result[i];
         const lieu = new Lieu(res.name, res.vicinity, res.rating);
         lieus.push(lieu);
@@ -38,16 +38,19 @@ export class PlacesAPIService {
     return lieus;
   }
 
-  getDirection(debut: string, fin: string){
+  getDirection(debut: string, fin: string): string {
     const service = new google.maps.DirectionsService(this.map);
     const request = {
       origin: debut,
       destination: fin,
       travelMode: 'WALKING'
     };
-
-    service.route(request, (result, status) =>{
+    let temps = '';
+    service.route(request, (result, status) => {
       console.log(result);
-    })
+      temps = result.routes[0].legs[0].duration.text;
+      console.log(temps);
+    });
+    return temps;
   }
 }
