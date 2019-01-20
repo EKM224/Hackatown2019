@@ -10,9 +10,9 @@ export class GeoService {
   constructor() { }
   getLocation() {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((pos)=>this.showPosition(pos));
+      navigator.geolocation.getCurrentPosition((pos) => this.showPosition(pos));
     } else {
-      console.log("Geolocation is not supported by this browser.");
+      console.log('Geolocation is not supported by this browser.');
     }
   }
 
