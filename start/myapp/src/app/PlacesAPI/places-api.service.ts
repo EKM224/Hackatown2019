@@ -34,8 +34,31 @@ export class PlacesAPIService {
         alert('Geocoder failed due to: ' + status);
       }
     });
-    return 'adress could not be found';
+    return 'address could not be found';
   }
+
+  getLatLong(addr: string): [number, number] {
+    this.geoCoder.geocode({
+      address: addr
+    }, function (results, status) {
+      if (status === google.maps.GeocoderStatus.OK) {
+        if (results[0]) {
+          console.log('resultat get lat long de ' + addr);
+          console.log(results[0]);
+          const long = (results[0].geometry.viewport.ga.j + results[0].geometry.viewport.ga.l) / 2;
+          const lat = (results[0].geometry.viewport.ma.j + results[0].geometry.viewport.ma.l) / 2;
+          console.log('lat: ' + lat + '\nlong: ' + long );
+          return [lat, long];
+        } else {
+          alert('No results found');
+        }
+      } else {
+        alert('Geocoder failed due to: ' + status);
+      }
+    });
+    return [0, 0];
+  }
+
 
   getPlaces(lat: number, long: number, type: string, keyword: string, radius: number): Promise<Lieu[]> {
     const service = new google.maps.places.PlacesService(this.map);
