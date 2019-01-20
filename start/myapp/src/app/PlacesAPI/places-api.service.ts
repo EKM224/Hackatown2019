@@ -18,14 +18,14 @@ export class PlacesAPIService {
     this.geoCoder = new google.maps.Geocoder();
   }
 
-  getAddr(lat: number, long: number) {
+  getAddr(lat: number, long: number): string {
     const latlng = new google.maps.LatLng(lat, long);
     this.geoCoder.geocode({
       'latLng': latlng
     }, function (results, status) {
       if (status === google.maps.GeocoderStatus.OK) {
         if (results[1]) {
-          console.log(results[1]);
+          return results[1];
         } else {
           alert('No results found');
         }
@@ -33,7 +33,38 @@ export class PlacesAPIService {
         alert('Geocoder failed due to: ' + status);
       }
     });
+    return 'address could not be found';
   }
+
+  getLatLong(addr: string): [number, number] {
+    this.geoCoder.geocode({
+      address: addr
+    }, function (results, status) {
+      if (status === google.maps.GeocoderStatus.OK) {
+        if (results[0]) {
+          const long = (results[0].geometry.viewport.ga.j + results[0].geometry.viewport.ga.l) / 2;
+          const lat = (results[0].geometry.viewport.ma.j + results[0].geometry.viewport.ma.l) / 2;
+          console.log('addresse: ' + addr + '\nlat: ' + lat + '\nlong: ' + long );
+          return [lat, long];
+        } else {
+          alert('No results found');
+        }
+      } else {
+        alert('Geocoder failed due to: ' + status);
+      }
+    });
+    return [0, 0];
+  }
+
+  getLatLongArray(adrdresses: string[]): [number, number][] {
+    const retour: [number, number][] = new Array();
+    adrdresses.forEach(item => {
+      retour.push(this.getLatLong(item));
+    });
+
+    return retour;
+  }
+
 
   getPlaces(lat: number, long: number, type: string, keyword: string, radius: number): Promise<Lieu[]> {
     const service = new google.maps.places.PlacesService(this.map);
@@ -52,7 +83,6 @@ export class PlacesAPIService {
           const lieus: Lieu[] = [];
           result.forEach(element => {
             const lieu: Lieu = new Lieu(element.name, element.vicinity, element.rating);
-            console.log(lieu);
             lieus.push(lieu);
           });
           fulfill(lieus);
@@ -67,9 +97,31 @@ export class PlacesAPIService {
    return lieus.filter((lieu: Lieu) => lieu.rating > minRating);
   }
 
-  makeItenarary(){
+  makeItenarary() {
 
   }
+
+  test(testArray: Lieu[], localisation: string) {
+    const wayPoints: string[] = new Array(testArray.length);
+    testArray.forEach((item) => {
+      wayPoints.push(item.adresse);
+    });
+    const service = new google.maps.DirectionsService(this.map);
+    const request = {
+      origin: localisation,
+      destination: localisation,
+      travelMode: 'WALKING',
+      waypoints: wayPoints,
+    };
+    let temps = '';
+    return new Promise(function(fulfill, reject) {
+      service.route(request, (result, status) => {
+        temps = result.routes[0].legs[0].duration.text;
+        fulfill(temps);
+      });
+    });
+  }
+
 
   getDirection(debut: string, fin: string, travelMode: string): Promise<string> {
     const service = new google.maps.DirectionsService(this.map);

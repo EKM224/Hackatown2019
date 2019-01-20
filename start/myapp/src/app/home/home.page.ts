@@ -1,6 +1,6 @@
 import { GeoService } from './../geo.service';
 import { PlacesAPIService } from './../PlacesAPI/places-api.service';
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { Lieu } from '../Lieu';
 
 @Component({
@@ -9,18 +9,22 @@ import { Lieu } from '../Lieu';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
+  @ViewChild('home') home: ElementRef;
+  @ViewChild('result') result: ElementRef;
   inLat: number; // = 45.502990;
   inLong: number; // = -73.613990;
   inType = 'restaurant';
   inKey: string;
   inRad = 2500;
+  addr: string;
+  endroits: Lieu[];
 
   constructor(public mapsSerice: PlacesAPIService, public geoService: GeoService) {
 
   }
 
   getAddr() {
-    this.mapsSerice.getAddr(this.inLat, this.inLong);
+    this.mapsSerice.getLatLongArray(['Montreal, Quebec', 'Paris, France']);
   }
 
   useMyLocation() {
@@ -30,7 +34,15 @@ export class HomePage {
   }
 
   async loadPlaces() {
+    document.getElementById('home').style.display = 'none';
+    document.getElementById('result').style.display = 'block';
     const places: Lieu[] = await this.mapsSerice.getPlaces(this.inLat, this.inLong, this.inType, this.inKey, this.inRad);
-    // this.mapsSerice.getDirection(places[0].adresse, places[1].adresse, 'WALKING');
+    const temps = this.mapsSerice.test(places, this.addr);
+    console.log(temps);
+  }
+
+  annuler() {
+      document.getElementById('result').style.display = 'none';
+      document.getElementById('home').style.display = 'block';
   }
 }

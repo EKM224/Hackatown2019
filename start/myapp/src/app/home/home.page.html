@@ -4,43 +4,56 @@
       <ion-menu-button></ion-menu-button>
     </ion-buttons>
     <ion-title>
-      Home
+      Press F for nothing ! 
     </ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
+<ion-content #home id="home" class="home">
     <ion-card class="welcome-card">
       <ion-img id="montreal" src="/assets/Montreal.jpg"></ion-img>
       <ion-card-header>
-        <ion-card-title>Welcome to on est des touristes F</ion-card-title>
+        <ion-card-title class="entete">Welcome to Montreal</ion-card-title>
       </ion-card-header>
     </ion-card>
     <ion-list lines="none">
       <ion-item>
-        <ion-button (click)='useMyLocation()'>Use my location</ion-button>
-        <button (click)='getAddr()'>Get adress</button>
+        <ion-button class="locationActuelle" (click)='useMyLocation()'>Current Location</ion-button>
+        <ion-button class="locationActuelle" (click)='getAddr()'>Current Address</ion-button>
+      </ion-item>
+      <div class="texte">or</div>
+      <ion-item>
+        <ion-input class="champs" [(ngModel)]="inLat" placeholder="Manual Latitude"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-input [(ngModel)]="inLat" placeholder="Latitude"></ion-input>
+          <ion-input class="champs" [(ngModel)]="inLong" placeholder="Manual Longitude"></ion-input>
+        </ion-item>
+      <ion-item>
+          <ion-input class="champs" [(ngModel)]="inRad" placeholder="Range"></ion-input>
       </ion-item>
       <ion-item>
-        <ion-input [(ngModel)]="inLong" placeholder="Longitude"></ion-input>
+        <ion-input class="champs" [(ngModel)]="inKey" placeholder="Keyword"></ion-input>
       </ion-item>
-      <ion-item>
-        <ion-input [(ngModel)]="inType" placeholder="Type"></ion-input>
+      <ion-item >
+        <ion-button  class="getStarted" (click)='loadPlaces()'>Get Started</ion-button>
       </ion-item>
-      <ion-item>
-        <ion-input [(ngModel)]="inKey" placeholder="Keyword"></ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-input [(ngModel)]="inRad" placeholder="Range"></ion-input>
-      </ion-item>
-      <ion-item>
-        <button (click)='loadPlaces()'>Get started</button>
-      </ion-item>
-      <ion-item [routerLink]="'/example'" routerDirection="forward">
-      <ion-card>New page</ion-card>
-      </ion-item>
+    </ion-list>
+</ion-content>
+
+
+
+
+<ion-content  #result id="result" class="result">
+    <ion-card class="welcome-card">
+      <ion-img id="montreal" src="/assets/Montreal.jpg"></ion-img>
+      <ion-card-header>
+        <ion-card-title class="entete">Welcome to Montreal</ion-card-title>
+      </ion-card-header>
+    </ion-card>
+    <ion-list lines="none">
+          <ion-item class="champs" *ngFor="let endroit of endroits">
+              {{ endroit.nom }}, {{endroit.adresse}}
+          </ion-item>
+        <ion-button class="cancel" (click)='annuler()'>Cancel</ion-button>
     </ion-list>
 </ion-content>
