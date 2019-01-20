@@ -27,12 +27,14 @@ export class PlacesAPIService {
     };
     const lieus: Lieu[] = [];
     service.nearbySearch(request, (result, status) => {
-      result.forEach(element => {
-        lieus.push(new Lieu(element.name, element.vicinity, element.rating));
-      });
+      if (status === google.maps.places.PlacesServiceStatus.OK) {
+        result.forEach(element => {
+          const lieu: Lieu = new Lieu(element.name, element.vicinity, element.rating);
+          console.log(lieu);
+          lieus.push(lieu);
+        });
+      }
     });
-    console.log(lieus);
-    console.log(lieus[0]);
     return lieus;
   }
 
