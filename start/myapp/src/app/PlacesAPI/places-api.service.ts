@@ -107,25 +107,31 @@ export class PlacesAPIService {
     });
   }
 
-  getDistanceLatLong(debut: {lat: number, long: number}, fin: {lat: number, long: number}, travelMode: string): Promise<number> {
+  getDistanceLatLong(debut: {lat: number, long: number}, fin: {lat: number, long: number}, travelMode: string): Promise<string> {
     const service = new google.maps.DirectionsService(this.map);
     const latlngDebut = new google.maps.LatLng(debut.lat, debut.long);
     const latlngFin = new google.maps.LatLng(fin.lat, fin.long);
     const request = {
-      origin: debut,
-      destination: fin,
+      origin: latlngDebut,
+      destination: latlngFin,
       travelMode: travelMode
     };
-    let temps = 0;
     return new Promise(function(fulfill, reject) {
       service.route(request, (result, status) => {
-        temps = this.transformStringMinutes(result.routes[0].legs[0].duration.text);
-        fulfill(temps);
+        fulfill(result.routes[0].legs[0].duration.text);
       });
     });
   }
 
-  pointsPlusProche(debut: [number, number], table: [number, number][]): [number, number][] {
+  async getDistanceLatLongNumber(debut: {lat: number, long: number}, fin: {lat: number, long: number},
+     travelMode: string): Promise<number> {
+    const temps = await this.getDistanceLatLong({lat: debut.lat, long: debut.long}, {lat: fin.lat, long: fin.long}, 'WALKING');
+    console.log(temps);
+    const numTemps: number = this.transformStringMinutes(temps);
+    return numTemps;
+  }
+
+  /*pointsPlusProche(debut: [number, number], table: [number, number][]): [number, number][] {
     const retour: [number, number][] = new Array();
     const plusPetit: number[] = new Array();
     retour[0] = [table[0][0], table[0][1]];
@@ -149,10 +155,12 @@ export class PlacesAPIService {
       }
     }
     return retour;
-  }
+  }*/
 
   transformStringMinutes(str: string): number {
     const arr: string[] = str.split(' ');
+    console.log(str);
+    console.log(arr);
     let multiplicateur = 1;
     let total = 0;
     for (let i = 1; i < arr.length; i += 2) {
@@ -174,7 +182,7 @@ export class PlacesAPIService {
       total += multiplicateur * Number(arr[i - 1]);
     }
 
-    return 0;
+    return total;
   }
 }
 

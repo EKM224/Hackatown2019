@@ -24,8 +24,10 @@ export class HomePage {
     this.useMyLocation();
   }
 
-  getAddr() {
-    console.log(this.mapsService.getDistanceAddr('Montreal, Quebec', 'Quebec, Quebec', 'WALKING'));
+  async getAddr() {
+    const ser = await this.mapsService.getDistanceLatLongNumber({lat: 48.862725, long: 2.287592},
+       {lat: 48.8039, long: 2.287592}, 'WALKING');
+    console.log(ser);
   }
 
   useMyLocation() {
