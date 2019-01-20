@@ -17,8 +17,26 @@
       </ion-card-header>
     </ion-card>
     <ion-list lines="none">
+      <ion-item>
+        <ion-input [(ngModel)]="inLat" placeholder="Latitude"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input [(ngModel)]="inLong" placeholder="Longitude"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input [(ngModel)]="inType" placeholder="Type"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input [(ngModel)]="inKey" placeholder="Keyword"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input [(ngModel)]="inRad" placeholder="Range"></ion-input>
+      </ion-item>
+      <ion-item>
+        <button (click)='loadPlaces()'>Get started</button>
+      </ion-item>
       <ion-item [routerLink]="'/example'" routerDirection="forward">
-      <ion-card>Get Started</ion-card>
+      <ion-card>New page</ion-card>
       </ion-item>
     </ion-list>
 </ion-content>
