@@ -18,22 +18,15 @@ export class PlacesAPIService {
     this.geoCoder = new google.maps.Geocoder();
   }
 
-  getAddr(lat: number, long: number): string {
+  getAddr(lat: number, long: number): Promise<string> {
     const latlng = new google.maps.LatLng(lat, long);
-    this.geoCoder.geocode({
-      'latLng': latlng
-    }, function (results, status) {
-      if (status === google.maps.GeocoderStatus.OK) {
-        if (results[1]) {
-          return results[1];
-        } else {
-          alert('No results found');
-        }
-      } else {
-        alert('Geocoder failed due to: ' + status);
-      }
+    const geo = this.geoCoder;
+    return new Promise(function(fulfill, reject) {
+      geo.geocode({ latLng: latlng }, (results, status) => {
+        console.log(results);
+        fulfill( results[0].formatted_address);
+      });
     });
-    return 'address could not be found';
   }
 
   getLatLong(addr: string): [number, number] {

@@ -24,20 +24,24 @@ export class HomePage {
     this.useMyLocation();
   }
 
-  async getAddr() {
-    const ser = await this.mapsService.getDistanceLatLongNumber({lat: 48.862725, long: 2.287592},
+  getAddr() {
+    const ser = this.mapsService.getDistanceLatLongNumber({lat: 48.862725, long: 2.287592},
        {lat: 48.8039, long: 2.287592}, 'WALKING');
     console.log(ser);
   }
 
-  useMyLocation() {
-    this.geoService.getLocation();
-    this.inLat = this.geoService.lat;
-    this.inLong = this.geoService.long;
+  async useMyLocation() {
+    if (this.first) {
+      this.geoService.getLocation();
+    }
+    if (!this.first) {
+      this.inLat = this.geoService.lat;
+      this.inLong = this.geoService.long;
+    }
     console.log(this.inLat);
     console.log(this.inLong);
     if (!this.first) {
-      this.addr = this.mapsService.getAddr(this.inLat, this.inLong);
+      this.addr = (await this.mapsService.getAddr(this.inLat, this.inLong));
     }
     this.first = false;
   }
