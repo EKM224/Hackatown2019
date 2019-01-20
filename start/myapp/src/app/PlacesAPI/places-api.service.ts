@@ -31,14 +31,18 @@ export class PlacesAPIService {
     this.init(lat, long, type, keyword, radius);
     const service = new google.maps.places.PlacesService(this.map);
     const request = {
-      query: 'Museum of Contemporary Art Australia',
-      fields: ['photos', 'formatted_address', 'name', 'rating', 'opening_hours', 'geometry'],
+      location: new google.maps.LatLng(lat, long),
+      radius: radius,
+      type: type,
+      openNow: true
     };
-    var nom:string;
-    service.findPlaceFromQuery(request, (result, status) => {
-      nom = result;
+    var noms: string[] = new Array();
+    service.nearbySearch(request, (result, status) => {
+      for(var i = 0; i < result.length; i++){
+        noms.push(result[i].name);
+      }
       console.log(result);
     });
-    return nom;
+    return noms;
   }
 }
