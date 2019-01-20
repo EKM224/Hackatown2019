@@ -16,11 +16,11 @@ export class ExamplePage implements OnInit {
   }
 
   ngOnInit() {
-    // this.hero = this.placesAPI.getPlaces();
-    this.placesAPI.getPlaces().subscribe(data => {
-        console.log(data);
-        this.hero = data;
-      });
+    this.hero = this.placesAPI.getPlaces();
+  //  this.placesAPI.getPlaces().subscribe(data => {
+  //      console.log(data);
+  //      this.hero = data;
+  //    });
   }
 
 }
