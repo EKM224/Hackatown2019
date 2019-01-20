@@ -37,8 +37,6 @@ export class HomePage {
     document.getElementById('home').style.display = 'none';
     document.getElementById('result').style.display = 'block';
     const places: Lieu[] = await this.mapsSerice.getPlaces(this.inLat, this.inLong, this.inType, this.inKey, this.inRad);
-    const temps = this.mapsSerice.test(places, this.addr);
-    console.log(temps);
   }
 
   annuler() {
