@@ -9,27 +9,27 @@ import { Lieu } from '../Lieu';
   styleUrls: ['home.page.scss'],
 })
 export class HomePage {
-  inLat: number; //= 45.502990;
+  inLat: number; // = 45.502990;
   inLong: number; // = -73.613990;
-  inType: string = "restaurant";
+  inType = 'restaurant';
   inKey: string;
   inRad = 1500;
 
-  constructor(public mapsSerice: PlacesAPIService, public geoService: GeoService){
+  constructor(public mapsSerice: PlacesAPIService, public geoService: GeoService) {
 
   }
 
-  useMyLocation(){
+  useMyLocation() {
     this.geoService.getLocation();
     this.inLat = this.geoService.lat;
     this.inLong = this.geoService.long;
   }
 
-  loadPlaces(){
-    let places: Lieu[] = new Array();
-    places = this.mapsSerice.getPlaces(this.inLat, this.inLong, this.inType, this.inKey, this.inRad);
+  loadPlaces() {
+    const places: Lieu[] = this.mapsSerice.getPlaces(this.inLat, this.inLong, this.inType, this.inKey, this.inRad);
     console.log(places);
-    console.log(places.length);
-    this.mapsSerice.getDirection(places[0].adresse, places[1].adresse);
+    const array = new Array({1: 2, 3: 4, 5: 6}, {7: 8, 9: 10, 11: 12});
+    console.log(array[0]);
+    this.mapsSerice.getDirection(places[0].adresse, places[1].adresse, 'WALKING');
   }
 }
