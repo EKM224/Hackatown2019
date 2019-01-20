@@ -107,11 +107,12 @@ export class PlacesAPIService {
       wayPoints.push(item.adresse);
     });
     const service = new google.maps.DirectionsService(this.map);
+    const latlngDebut = new google.maps.LatLng(debut[0], debut[1]);
+    const latlngFin = new google.maps.LatLng(fin[0], fin[1]);
     const request = {
-      origin: localisation,
-      destination: localisation,
-      travelMode: 'WALKING',
-      waypoints: wayPoints,
+      origin: debut,
+      destination: fin,
+      travelMode: travelMode
     };
     let temps = '';
     return new Promise(function(fulfill, reject) {
@@ -122,8 +123,7 @@ export class PlacesAPIService {
     });
   }
 
-
-  getDirection(debut: string, fin: string, travelMode: string): Promise<string> {
+  getDistanceAddr(debut: string, fin: string, travelMode: string): Promise<string> {
     const service = new google.maps.DirectionsService(this.map);
     const request = {
       origin: debut,
