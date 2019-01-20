@@ -17,10 +17,12 @@ export class HomePage {
   constructor(public mapsSerice: PlacesAPIService) {
 
   }
+
   loadPlaces() {
     let places: Lieu[] = new Array();
     places = this.mapsSerice.getPlaces(this.inLat, this.inLong, this.inType, this.inKey, this.inRad);
     console.log(places);
+    console.log(places.length);
     this.mapsSerice.getDirection(places[0].adresse, places[1].adresse);
   }
 }
