@@ -19,6 +19,10 @@ export class HomePage {
 
   }
 
+  getAddr() {
+    this.mapsSerice.getAddr(this.inLat, this.inLong);
+  }
+
   useMyLocation() {
     this.geoService.getLocation();
     this.inLat = this.geoService.lat;

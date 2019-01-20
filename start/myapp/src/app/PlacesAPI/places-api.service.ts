@@ -11,9 +11,28 @@ declare var google;
 })
 export class PlacesAPIService {
   private map: any;
+  private geoCoder;
 
   constructor(private http: HttpClient) {
     this.map = new google.maps.Map(document.getElementById('map'));
+    this.geoCoder = new google.maps.Geocoder();
+  }
+
+  getAddr(lat: number, long: number) {
+    const latlng = new google.maps.LatLng(lat, long);
+    this.geoCoder.geocode({
+      'latLng': latlng
+    }, function (results, status) {
+      if (status === google.maps.GeocoderStatus.OK) {
+        if (results[1]) {
+          console.log(results[1]);
+        } else {
+          alert('No results found');
+        }
+      } else {
+        alert('Geocoder failed due to: ' + status);
+      }
+    });
   }
 
   getPlaces(lat: number, long: number, type: string, keyword: string, radius: number): Promise<Lieu[]> {
