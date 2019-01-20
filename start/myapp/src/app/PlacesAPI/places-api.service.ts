@@ -34,10 +34,11 @@ export class PlacesAPIService {
       query: 'Museum of Contemporary Art Australia',
       fields: ['photos', 'formatted_address', 'name', 'rating', 'opening_hours', 'geometry'],
     };
-
+    var nom:string;
     service.findPlaceFromQuery(request, (result, status) => {
+      nom = result;
       console.log(result);
     });
-    return 'yo mama';
+    return nom;
   }
 }
