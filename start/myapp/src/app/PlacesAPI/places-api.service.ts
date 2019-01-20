@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
+import { Lieu } from '../Lieu'
 declare const require: any;
 declare var google;
 
@@ -36,13 +37,14 @@ export class PlacesAPIService {
       type: type,
       openNow: true
     };
-    var noms: string[] = new Array();
+    var lieus: Lieu[] = new Array();
     service.nearbySearch(request, (result, status) => {
       for(var i = 0; i < result.length; i++){
-        noms.push(result[i].name);
+        const res = result[i];
+        const lieu = new Lieu(res.name, res.vicinity, res.rating);
+        lieus.push(lieu);
       }
-      console.log(result);
     });
-    return noms;
+    return lieus;
   }
 }
